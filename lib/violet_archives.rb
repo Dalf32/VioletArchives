@@ -1,0 +1,6 @@
+require_relative 'violet_archives/change_scorer'
+require_relative 'violet_archives/dota_data'
+require_relative 'violet_archives/dota_service'
+require_relative 'violet_archives/dota_service_urls'
+require_relative 'violet_archives/patch_builder'
+require_relative 'violet_archives/patch_set'
