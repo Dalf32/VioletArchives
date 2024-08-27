@@ -33,12 +33,13 @@ Gem::Specification.new do |spec|
     Dir.glob(File.join('**', '*.rb'))
   end
   spec.bindir        = 'bin'
-  spec.executables   = ['va_console.rb', 'va_patch_parser.rb']
+  spec.executables   = %w[va_console.rb va_patch_parser.rb]
   spec.require_paths = ['lib']
 
   spec.required_ruby_version = '>=3.0.4'
   spec.add_development_dependency 'bundler', '~>2.5.14'
   spec.add_development_dependency 'rake', '>=13.0.3'
+  spec.add_development_dependency 'rubocop'
   spec.add_dependency 'chronic_duration', '>=0.10.6'
   spec.add_dependency 'json', '>=2.6.1'
 end

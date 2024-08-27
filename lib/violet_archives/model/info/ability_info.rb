@@ -15,6 +15,10 @@ module VioletArchives
       @ability_data['id']
     end
 
+    def name_id
+      @ability_data['name']
+    end
+
     def name
       @ability_data['name_loc']
     end

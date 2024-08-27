@@ -9,20 +9,28 @@ module VioletArchives
       @hero_data = hero_data
     end
 
+    def name_id
+      @hero_data['name']
+    end
+
     def name
       @hero_data['name_loc']
     end
 
+    def short_desc
+      @hero_data['npe_desc_loc']
+    end
+
     def attack_type
-      [nil, 'Melee', 'Ranged'][@hero_data['attack_capability']]
+      %w[Melee Ranged][@hero_data['attack_capability'] - 1]
     end
 
     def attribute
       %w[Strength Agility Intelligence Universal][@hero_data['primary_attr']]
     end
 
-    def short_desc
-      @hero_data['npe_desc_loc']
+    def complexity
+      %w[Low Medium High][@hero_data['complexity'] - 1]
     end
 
     def abilities

@@ -38,7 +38,7 @@ module VioletArchives
   
         Abilities
         ----------
-          #{abilities.map.with_index do |ability, i|
+          #{abilities.map do |ability|
             label = 'Innate: ' if ability.innate?
             label = 'Ultimate: ' if ability.ult?
             label = 'Shard: ' if ability.from_shard?
@@ -119,7 +119,7 @@ module VioletArchives
 
       <<~ABILITY_DETAIL
         #{ability_info.short_desc}#{notes.join("\n")}
-  
+
         #{format_target_detail(ability_info)}
         #{format_debuff_piercing(ability_info)}
         #{format_ability_values(ability_info).strip}
