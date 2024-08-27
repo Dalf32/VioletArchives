@@ -1,15 +1,12 @@
 require 'chronic_duration'
 require 'violet_archives'
+require 'violet_archives/input/jargon_parser'
 require 'violet_archives/output/dota_text_formatter'
 require 'violet_archives/output/printer'
 require 'violet_archives/storage/json_file_repo'
 require_relative 'console_config'
 
 include VioletArchives
-
-def check_abbrevs(input)
-  HERO_ABBREVS[input] || ITEM_ABBREVS[input] || input
-end
 
 urls = DotaServiceUrls.new('http://www.dota2.com/datafeed',
                            item_list_path: 'itemlist?language=english',
@@ -24,6 +21,8 @@ dota_dataset = DotaData.new(repo, dota_service)
 
 formatter = DotaTextFormatter.new(dota_dataset)
 printer = Printer.new('output.txt')
+
+jargon = JargonParser.with_defaults(hero_abbrevs: HERO_ABBREVS, item_abbrevs: ITEM_ABBREVS)
 
 active_patches = PatchSet.new(dota_dataset.patches_with_number(dota_dataset.current_patch.base_number))
 patch_mode = "number #{dota_dataset.current_patch.base_number}"
@@ -125,7 +124,7 @@ loop do
 
     printer.puts formatter.format_entities(active_patches.nerfed_heroes(num))
   when /\Atrend/
-    name = check_abbrevs(input.sub(/\Atrend/, '').strip)
+    name = jargon.translate(input.sub(/\Atrend/, '').strip)
     printer.puts 'Unrecognized.' and next if name.empty?
 
     hero_id = dota_dataset.hero_id_by_name(name)
@@ -143,7 +142,7 @@ loop do
 
     printer.puts formatter.format_trend(found_changes)
   when /\Ainfo/
-    name = check_abbrevs(input.sub(/\Ainfo/, '').strip)
+    name = jargon.translate(input.sub(/\Ainfo/, '').strip)
     printer.puts 'Unrecognized.' and next if name.empty?
 
     entity_id = dota_dataset.hero_id_by_name(name)
@@ -166,7 +165,7 @@ loop do
 
     printer.puts 'Unrecognized.'
   else
-    name = check_abbrevs(input)
+    name = jargon.translate(input)
     hero_id = dota_dataset.hero_id_by_name(name)
     item_id = dota_dataset.item_id_by_name(name)
     found_changes = []
