@@ -8,6 +8,9 @@ module VioletArchives
     def initialize(repo, dota_service)
       @repo = repo
       @dota_service = dota_service
+      @item_info = {}
+      @ability_info = {}
+      @hero_info = {}
     end
 
     def patches
@@ -55,15 +58,30 @@ module VioletArchives
     end
 
     def item_data(item_id)
-      ItemInfo.new(entity_data(@dota_service.item_data(item_id), :item))
+      unless @item_info.key?(item_id)
+        item = ItemInfo.new(entity_data(@dota_service.item_data(item_id), :item))
+        @item_info[item_id] = item
+      end
+
+      @item_info[item_id]
     end
 
     def ability_data(ability_id)
-      AbilityInfo.new(entity_data(@dota_service.ability_data(ability_id), :ability))
+      unless @ability_info.key?(ability_id)
+        abil = AbilityInfo.new(entity_data(@dota_service.ability_data(ability_id), :ability))
+        @ability_info[ability_id] = abil
+      end
+
+      @ability_info[ability_id]
     end
 
     def hero_data(hero_id)
-      HeroInfo.new(entity_data(@dota_service.hero_data(hero_id), :hero))
+      unless @hero_info.key?(hero_id)
+        hero = HeroInfo.new(entity_data(@dota_service.hero_data(hero_id), :hero))
+        @hero_info[hero_id] = hero
+      end
+
+      @hero_info[hero_id]
     end
 
     private
@@ -80,7 +98,7 @@ module VioletArchives
     end
 
     def get_id_by_name(name_map, entity_name)
-      name_map.to_a.find { |(_, name)| name.casecmp(entity_name).zero? }&.first
+      name_map.to_a.find { |(_, name)| name.casecmp?(entity_name) }&.first
     end
 
     def entity_data(json_hash, type)
