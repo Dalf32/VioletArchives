@@ -35,7 +35,7 @@ module VioletArchives
         #{'=' * (hero_info.name.length + 1)}
         #{hero_info.attack_type} #{hero_info.attribute} Hero
         #{hero_info.short_desc}
-  
+
         Abilities
         ----------
           #{abilities.map do |ability|
@@ -43,7 +43,7 @@ module VioletArchives
             label = 'Ultimate: ' if ability.ult?
             label = 'Shard: ' if ability.from_shard?
             label = 'Scepter: ' if ability.from_scepter?
-  
+
             "#{label}#{ability.name}\n  #{ability.short_desc}\n"
           end.join("\n  ")}
         Facets

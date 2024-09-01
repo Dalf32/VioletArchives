@@ -35,10 +35,7 @@ module VioletArchives
 
     def abilities
       abils = @hero_data['abilities'].map { |ability_data| AbilityInfo.new(ability_data) }
-      abils + @hero_data['facet_abilities'].map do |facet_abil|
-        facet_data = facet_abil.dig('abilities', 0)
-        facet_data.nil? ? nil : AbilityInfo.new(facet_data)
-      end.compact
+      abils + facet_abilities.compact
     end
 
     def abilities_ordered
@@ -60,11 +57,18 @@ module VioletArchives
     end
 
     def facets
-      @hero_data['facets'].map { |facet_data| FacetInfo.new(facet_data, facet_bonus_values) }
+      @hero_data['facets'].map.with_index { |facet_data, i| FacetInfo.new(facet_data, facet_bonus_values, facet_addtl_values(i)) }
     end
 
     def talents
       @hero_data['talents'].map { |talent_data| TalentInfo.new(talent_data, bonus_values) }.reverse.each_slice(2).to_a
+    end
+
+    def facet_abilities
+      @hero_data['facet_abilities'].map do |facet_abil|
+        facet_data = facet_abil.dig('abilities', 0)
+        facet_data.nil? ? nil : AbilityInfo.new(facet_data)
+      end
     end
 
     private
@@ -75,6 +79,10 @@ module VioletArchives
 
     def facet_bonus_values
       abilities.flat_map(&:special_values).map(&:facet_bonus).reject(&:empty?)
+    end
+
+    def facet_addtl_values(index)
+      facet_abilities[index]&.special_values || []
     end
   end
 end
